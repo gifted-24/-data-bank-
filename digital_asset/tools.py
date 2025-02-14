@@ -106,6 +106,7 @@ def match(database, tokens):
             for key in database.keys():
                 remove_tokens = [tokens.remove(token) for token in tokens if token[0] == key]
             result['missing tokens'].extend(tokens)
+            result['no. of missing tokens'] = len(tokens)
         elif not database.keys():
             result['missing tokens'] = tokens
         elif token_count == database_key_count:

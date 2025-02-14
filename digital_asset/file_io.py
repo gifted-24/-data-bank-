@@ -47,7 +47,7 @@ def save_file(dir, data):
             )
         if dir.is_file():
             log.info(f"'{dir.name}' created! -> '{dir}'")
-            return f"'{dir.name}' created! -> '{dir.parent}'"
+            return f"'{dir.name}' created! -> '{dir}'"
         else:
             log.info(f"Failed to save file -> '{dir.name}'!")
             return "Operation Failed!"

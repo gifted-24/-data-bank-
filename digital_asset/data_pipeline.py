@@ -49,6 +49,7 @@ from tools import (
 )
 from time import sleep
 from collections import defaultdict
+import json
 
 if __name__ == '__main__':
 	try:	
@@ -79,13 +80,16 @@ if __name__ == '__main__':
 			log.info(status)
 			if status['retries'] == 10:
 				break
-		
-		log.info(status) 
+		status = json.dumps(
+			status,
+			indent=4,
+			ensure_ascii=False
+		)
+		log.info(status)		 
 		print(status)
 		if database_dir.exists():
 			database = update_file(database_dir, database)
 		message = save_file(database_dir, database)
-		log.info(message)
 		print(message)	
 	except:
 		log.critical()
