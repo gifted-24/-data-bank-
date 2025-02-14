@@ -33,11 +33,10 @@ def update_file(database_dir, database):
         return old_database
     except:
         log.error()
-        raise
 	
 def save_file(dir, data):
     try:
-        log.info(f"attempting to save data in -> '{dir.parent}'")
+        log.info(f"saving data to -> '{dir}'")
         with dir.open('w', encoding='utf-8') as file:
             json.dump(
                 data, 
@@ -47,10 +46,8 @@ def save_file(dir, data):
             )
         if dir.is_file():
             log.info(f"'{dir.name}' created! -> '{dir}'")
-            return f"'{dir.name}' created! -> '{dir}'"
         else:
             log.info(f"Failed to save file -> '{dir.name}'!")
-            return "Operation Failed!"
     except:
         log.error()
 

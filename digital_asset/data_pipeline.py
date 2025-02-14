@@ -67,9 +67,15 @@ if __name__ == '__main__':
 				log.info(f"Fetching historical data: 'batch[{tag}]' - {[token[0] for token in token_batch]}")
 				process_task(token_batch, database)
 				log.info(f"database compiled for -> 'batch[{tag}]'")
+				if database_dir.exists():
+					updated_database = update_file(database_dir, database)
+					save_file(database_dir, updated_database)
+				else:
+					save_file(database_dir, database)
 				sleep(60)
-			status['retries'] += 1
-			missing_tokens = match(database, tokens).get('missing tokens')		
+			missing_tokens = match(database, tokens).get('missing tokens')
+			if missing_tokens:
+			    status['retries'] += 1		
 			status.update(
 					{
 						'missing tokens': missing_tokens,
@@ -87,9 +93,5 @@ if __name__ == '__main__':
 		)
 		log.info(status)		 
 		print(status)
-		if database_dir.exists():
-			database = update_file(database_dir, database)
-		message = save_file(database_dir, database)
-		print(message)	
 	except:
 		log.critical()

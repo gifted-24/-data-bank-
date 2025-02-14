@@ -102,7 +102,7 @@ def match(database, tokens):
     try:
         token_count, database_key_count = count(database, tokens)
         result = defaultdict(list)
-        if token_count > database_key_count and database.keys():
+        if (token_count > database_key_count) and database.keys():
             for key in database.keys():
                 remove_tokens = [tokens.remove(token) for token in tokens if token[0] == key]
             result['missing tokens'].extend(tokens)
