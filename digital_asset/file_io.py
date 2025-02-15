@@ -36,7 +36,7 @@ def update_file(database_dir, database):
 	
 def save_file(dir, data):
     try:
-        log.info(f"saving data to -> '{dir}'")
+        log.info(f"saving database to -> '{dir}'")
         with dir.open('w', encoding='utf-8') as file:
             json.dump(
                 data, 
@@ -45,7 +45,7 @@ def save_file(dir, data):
                 indent=4
             )
         if dir.is_file():
-            log.info(f"'{dir.name}' created! -> '{dir}'")
+            log.info(f"'database' saved! -> '{dir}'")
         else:
             log.info(f"Failed to save file -> '{dir.name}'!")
     except:
@@ -53,14 +53,14 @@ def save_file(dir, data):
 
 def get_file(dir):
     try:
-        log.info(f"attempting to retrieve '{dir.name}' from -> '{dir.parent}'")
+        log.info(f"retrieving 'global database' from -> '{dir}'")
         if dir.exists():
             with dir.open('r', encoding='utf-8') as f:
                 data = json.load(f)
-                log.info(f"retrieved '{dir.name}'!")
+                log.info(f"retrieved 'global database': '{dir}'")
                 return data
         else:
-            log.info(f"'{dir.name}' does not exist in '{dir.parent}'")
+            log.info(f"'{dir}' does not exist.")
     except:
         log.error()
 

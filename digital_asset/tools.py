@@ -114,3 +114,93 @@ def match(database, tokens):
         return result
     except:
         log.error()
+
+def is_leap_year(year):
+	if (year % 4 == 0) or (year % 100 == 0 and year % 400 == 0):
+		return True
+	else:
+		return False
+
+def entries():
+	try:
+		from_year = int(
+			input(
+				'From Year: '
+			).strip()
+		)
+		from_month = int(
+			input(
+				f"From Month: {from_year}/" 
+			).strip()
+		)
+		to_year = int(
+			input(
+				'To Year: '
+			).strip()
+		)
+		to_month = int(
+			input(
+				f"To Month: {to_year}/"
+			).strip()
+		)
+		today = int(
+			input(
+				f"Today's Date: {to_year}/{to_month}/"
+			).strip()
+		)
+		return from_year, from_month, to_year, to_month, today	
+	except:
+		log.error()
+
+def query_database(
+	database, token_data, token_name
+):
+	try:
+		from_year, from_month, to_year, to_month, today = entries()
+		
+		is_leap_year_cache = set()
+		is_not_leap_year_cache = set()
+		for year in range(from_year, (to_year + 1)):
+			if (year not in is_leap_year_cache) and (year not in is_not_leap_year_cache):
+				if is_leap_year(year):
+					is_leap_year_cache.add(year)
+					months['february'] = 29
+				else:
+					is_not_leap_year_cache.add(year)
+					months['february'] = 28
+			for month, month_no in zip(months.keys(), range(1, 13)):
+				if (year == from_year and month_no < from_month) or (year == to_year and month_no > to_month):
+					continue
+				if (month_no < 10):
+					month_no = f'0{month_no}'
+				if (year == from_year) and (int(month_no) == from_month):
+					start = 17
+				else:
+					start = 1
+					
+				days = months[month]		
+				for day in range(start, (days + 1)): 
+					if (year == to_year) and (int(month_no) == to_month and day > today):
+						break
+					if (day < 10):
+						day = f'0{day}'
+					time_stamp = f'{year}:{month_no}:{day}'
+					token_data[time_stamp].update(database[token_name].get(time_stamp))
+	except:
+		log.error()
+
+
+months = {
+	'January': 31, 
+	'february': [28, 29],
+	'march': 31,
+	'april': 30,
+	'may': 31,
+	'june': 30,
+	'july': 31,
+	'august': 31,
+	'september': 30,
+	'october': 31,
+	'november': 30,
+	'december': 31
+}

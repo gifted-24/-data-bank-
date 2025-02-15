@@ -56,7 +56,14 @@ if __name__ == '__main__':
 		database = defaultdict(dict)				
 		log.info(f"declared 'database' variable -> {database}")
 				
-		tokens = get_file(tokens_dir)
+		#tokens = get_file(tokens_dir)
+		tokens = [
+			[
+				"ETH",
+				"ethereum",
+				"ethereum"
+			]
+		]
 		status = dict()
 		status['retries'] = 0
 
@@ -73,9 +80,7 @@ if __name__ == '__main__':
 				else:
 					save_file(database_dir, database)
 				sleep(60)
-			missing_tokens = match(database, tokens).get('missing tokens')
-			if missing_tokens:
-			    status['retries'] += 1		
+			missing_tokens = match(database, tokens).get('missing tokens')		
 			status.update(
 					{
 						'missing tokens': missing_tokens,
@@ -83,7 +88,9 @@ if __name__ == '__main__':
 						'coingecko API request-status': 'successful ✨'
 					}
 			)
-			log.info(status)
+			if missing_tokens:
+				status['retries'] += 1
+				log.info(status)
 			if status['retries'] == 10:
 				break
 		status = json.dumps(
