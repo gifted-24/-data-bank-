@@ -41,7 +41,7 @@ GMAIL: giftesefo78@gmail.com
 """
 
 from file_io import (
-	save_file, get_file, update_file, tokens_dir, database_dir
+	save_file, get_file, tokens_dir, database_dir
 )
 from log import log
 from tools import (
@@ -53,38 +53,39 @@ import json
 
 if __name__ == '__main__':
 	try:	
-		database = defaultdict(dict)				
-		log.info(f"declared 'database' variable -> {database}")
+		database_cache = defaultdict(dict)
+		if database_dir.is_file():
+			database = get_file(database_dir)
+			database = defaultdict(dict, database)
+		else:
+			database = database_cache				
+		log.info(f"declared 'database_cache' variable -> {database_cache}")
 				
 		#tokens = get_file(tokens_dir)
 		tokens = [
 			[
-				"ETH",
-				"ethereum",
-				"ethereum"
+				"BNB",
+				"binance coin",
+				"binancecoin"
 			]
 		]
 		status = dict()
 		status['retries'] = 0
 
-		missing_tokens = match(database, tokens).get('missing tokens')
+		missing_tokens = match(database_cache, tokens).get('missing tokens')
 		while missing_tokens:
 			batches = batch_tokens(tokens, 5)
 			for token_batch, tag in zip(batches, range(1, (len(missing_tokens) + 1))):
 				log.info(f"Fetching historical data: 'batch[{tag}]' - {[token[0] for token in token_batch]}")
-				process_task(token_batch, database)
+				process_task(token_batch, database, database_cache)
 				log.info(f"database compiled for -> 'batch[{tag}]'")
-				if database_dir.exists():
-					updated_database = update_file(database_dir, database)
-					save_file(database_dir, updated_database)
-				else:
-					save_file(database_dir, database)
+				save_file(database_dir, database)
 				sleep(60)
-			missing_tokens = match(database, tokens).get('missing tokens')		
+			missing_tokens = match(database_cache, tokens).get('missing tokens')		
 			status.update(
 					{
-						'missing tokens': missing_tokens,
-						'database tokens': len(database.keys()),
+						'Missing Tokens': missing_tokens,
+						'Available Tokens': len(database_cache.keys()),
 						'coingecko API request-status': 'successful ✨'
 					}
 			)

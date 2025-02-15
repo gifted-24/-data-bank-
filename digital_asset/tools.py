@@ -22,6 +22,7 @@ from coingecko import Api
 import requests
 from time import sleep
 from collections import defaultdict
+from copy import deepcopy
 
 __all__ = [
       'process_task',
@@ -31,7 +32,7 @@ __all__ = [
       'match'
 ]
 
-def process_task(tokens, database):
+def process_task(tokens, database, database_cache):
 	try:
 		with ProcessPoolExecutor() as executor:
 			tasks = [executor.submit(task, token) for token in tokens] 
@@ -41,6 +42,7 @@ def process_task(tokens, database):
 			asset_symbol, asset_data = task_output.result()
 			log.info(f"compiling database: '{asset_symbol}'")
 			database[asset_symbol].update(asset_data)
+			database_cache[asset_symbol].update(asset_data)
 	except:
 		log.error()
 
@@ -133,6 +135,11 @@ def entries():
 				f"From Month: {from_year}/" 
 			).strip()
 		)
+		from_day = int(
+			input(
+				f"From Day: {from_year}/{from_month}/"
+			).strip()
+		)
 		to_year = int(
 			input(
 				'To Year: '
@@ -143,20 +150,20 @@ def entries():
 				f"To Month: {to_year}/"
 			).strip()
 		)
-		today = int(
+		up_to = int(
 			input(
-				f"Today's Date: {to_year}/{to_month}/"
+				f"Up To: {to_year}/{to_month}/"
 			).strip()
 		)
-		return from_year, from_month, to_year, to_month, today	
+		return from_year, from_month, from_day, to_year, to_month, up_to	
 	except:
 		log.error()
 
 def query_database(
-	database, token_data, token_name
+	database, token_data, token_symbol
 ):
 	try:
-		from_year, from_month, to_year, to_month, today = entries()
+		from_year, from_month, from_day, to_year, to_month, up_to = entries()
 		
 		is_leap_year_cache = set()
 		is_not_leap_year_cache = set()
@@ -174,18 +181,20 @@ def query_database(
 				if (month_no < 10):
 					month_no = f'0{month_no}'
 				if (year == from_year) and (int(month_no) == from_month):
-					start = 17
+					start = from_day
 				else:
 					start = 1
 					
 				days = months[month]		
 				for day in range(start, (days + 1)): 
-					if (year == to_year) and (int(month_no) == to_month and day > today):
+					if (year == to_year) and (int(month_no) == to_month and day > up_to):
 						break
 					if (day < 10):
 						day = f'0{day}'
 					time_stamp = f'{year}:{month_no}:{day}'
-					token_data[time_stamp].update(database[token_name].get(time_stamp))
+					token_data[time_stamp].update(database[token_symbol].get(time_stamp))
+	except KeyError:
+		raise KeyError(f"Invalid Entry: '{token_symbol}': '{time_stamp}'")
 	except:
 		log.error()
 

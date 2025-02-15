@@ -24,15 +24,6 @@ __all__ = [
     'database_dir',
     'tokens_dir'
 ]
-
-def update_file(database_dir, database):
-    try:
-        log.info(f"updating database with recent data -> '{database_dir}'")
-        old_database = get_file(database_dir)
-        old_database.update(database)
-        return old_database
-    except:
-        log.error()
 	
 def save_file(dir, data):
     try:
