@@ -29,7 +29,11 @@ __all__ = [
       'task',
       'batch_tokens',
       'count',
-      'match'
+      'match',
+      'query_database',
+      'is_leap_year',
+      'entries',
+      'months'
 ]
 
 def process_task(tokens, database, database_cache):
