@@ -61,14 +61,14 @@ if __name__ == '__main__':
 			database = database_cache				
 		log.info(f"declared 'database_cache' variable -> {database_cache}")
 				
-		#tokens = get_file(tokens_dir)
-		tokens = [
+		tokens = get_file(tokens_dir)
+		"""tokens = [
 			[
 				"BNB",
 				"binance coin",
 				"binancecoin"
 			]
-		]
+		]"""
 		status = dict()
 		status['retries'] = 0
 
