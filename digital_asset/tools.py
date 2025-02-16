@@ -194,7 +194,9 @@ def query_database(
 					time_stamp = f'{year}:{month_no}:{day}'
 					token_data[time_stamp].update(database[token_symbol].get(time_stamp))
 	except KeyError:
-		raise KeyError(f"Invalid Entry: '{token_symbol}': '{time_stamp}'")
+		message = f"Invalid Entry: '{token_symbol}': '{time_stamp}'"
+		log.error(message)
+		raise
 	except:
 		log.error()
 

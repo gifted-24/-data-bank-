@@ -57,12 +57,16 @@ class Log:
         file_name = Path(frame.filename).name
         return file_name, error_name, error_message, line_no
 	
-    def error(self):
+    def error(self, message=None):
         file_name, error_name, error_message, line_no = self.get_error_detail()
+        if message:
+            error_message = message
         logging.error("%s - %s - ['%s' -> line %s]", error_name, error_message, file_name, line_no)
 		
-    def critical(self):
+    def critical(self, message=None):
         file_name, error_name, error_message, line_no = self.get_error_detail()
+        if message:
+            error_message = message
         logging.critical("%s - %s - ['%s' -> line %s]", error_name, error_message, file_name, line_no)
 		
     def info(self, message):
